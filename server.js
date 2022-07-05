@@ -11,7 +11,9 @@ app.use(
 
 app.use(express.json());
 
-const publicKeyStr = fs.readFileSync('/home/jason/software/temp/public_key_rsa_4096_pkcs8-exported.pem');
+const myArgs = process.argv.slice(2);
+const pemFileName = myArgs[0];
+const publicKeyStr = fs.readFileSync(pemFileName);
 console.log("publicKeyStr : %s", publicKeyStr);
 
 const publicKey = crypto.createPublicKey(
@@ -21,40 +23,32 @@ const publicKey = crypto.createPublicKey(
         type: 'spki'
     });
 
-app.post('/shipments', (req, res) => {
+app.put('/shipments', (req) => {
    console.log(req.body);
    const authorizationHdr = req.header('authorization');
    const hostHdr = req.header("host");
    const dateHdr = req.header("date");
    const digestHdr = req.header("digest");
    const inputStr = hostHdr + dateHdr + digestHdr;
-   const inputBytes = Array.from(Buffer.from(inputStr, "utf8"));
-   console.log("inputBytes : %s  |  inputStr : %s  | authorization : %s", inputBytes, inputStr, authorizationHdr);
+
+   console.log("inputStr : %s  | authorization : %s", inputStr, authorizationHdr);
 
    const pattern = /signature="(.*)"/;
    const matchedAry = authorizationHdr.match(pattern);
    const signature = matchedAry[1];
    console.log("signature : %s", signature);
 
-   verifySignature(signature, inputStr);
-   verify(signature, inputStr);
+   const isLegit = isLegitDigitalSignature(signature, inputStr);
+   console.log("verifySignature isVerified : %s", isLegit);
 });
 
-function verify(signature, inputData) {
-    const verify = crypto.createVerify("rsa-sha256");
-    verify.update(inputData);
-    const isVerified = verify.verify(publicKey, signature, 'base64');
-    console.log("verify - isVerified : %s", isVerified);
-}
-
-function verifySignature(signature, inputData) {
-    const isVerified = crypto.verify(
+function isLegitDigitalSignature(signature, inputData) {
+    return crypto.verify(
         'rsa-sha256',
         inputData,
         publicKey,
         Buffer.from(signature, 'base64')
     );
-    console.log("verifySignature isVerified : %s", isVerified);
 }
 
 const server = app.listen(8888, function () {
