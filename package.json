@@ -1,0 +1,15 @@
+{
+  "name": "nodejs-server",
+  "version": "1.0.0",
+  "description": "Test server that receives JSON requests",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Jason Long",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
