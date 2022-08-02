@@ -23,7 +23,7 @@ const publicKey = crypto.createPublicKey(
         type: 'spki'
     });
 
-app.put('/shipments', (req) => {
+app.put('/shipments', (req, res) => {
    console.log(req.body);
    const authorizationHdr = req.header('authorization');
    const hostHdr = req.header("host");
@@ -40,6 +40,8 @@ app.put('/shipments', (req) => {
 
    const isLegit = isLegitDigitalSignature(signature, inputStr);
    console.log("verifySignature isVerified : %s", isLegit);
+
+    return res.status(204).end();
 });
 
 function isLegitDigitalSignature(signature, inputData) {
@@ -51,7 +53,7 @@ function isLegitDigitalSignature(signature, inputData) {
     );
 }
 
-const server = app.listen(8888, function () {
+const server = app.listen(8889, function () {
     let address = server.address();
     console.log("listening at %", address);
 });
