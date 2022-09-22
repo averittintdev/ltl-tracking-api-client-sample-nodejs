@@ -1,3 +1,5 @@
+require('dotenv').config();
+const config = require('./config.js');
 const express = require('express');
 const crypto = require("crypto");
 const fs = require('fs');
@@ -11,8 +13,7 @@ app.use(
 
 app.use(express.json());
 
-const myArgs = process.argv.slice(2);
-const pemFileName = myArgs[0];
+const pemFileName = config.publicKeyPemFile;
 const publicKeyStr = fs.readFileSync(pemFileName);
 console.log("publicKeyStr : %s", publicKeyStr);
 

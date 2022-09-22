@@ -6,6 +6,10 @@ Initially constructed with node version 16.15.1
 
 This code shows how to validate the HTTP signature included in the HTTP header sent to the client's webhook.
 
-To run the sample code, download the pem and pass its path as an argument.
+To run the sample code, download the pem file.  
+Create a development configuration file, `.env.development`, in the root of this project and set it with the following.
+AVERITT_TRACKING_API_PUBLIC_KEY_FILE=/some/path/to/the/pem/file
 
-`npm start /home/jason/software/temp/public_key_rsa_4096_pkcs8-exported.pem`
+`npm install dotenv`
+
+`npm start`
